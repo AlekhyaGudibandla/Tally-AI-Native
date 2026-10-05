@@ -1,0 +1,204 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+// ----------------------------------------------------------------------------
+// 1. ENTERPRISE SETUP (Phase 1)
+// ----------------------------------------------------------------------------
+
+model Organization {
+  id             String    @id @default(cuid())
+  name           String
+  pan            String?
+  gstin          String?
+  financialYear  String
+  industry       String?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  branches       Branch[]
+  users          User[]
+  accounts       Account[]
+  vouchers       Voucher[]
+  customers      Customer[]
+  suppliers      Supplier[]
+  products       Product[]
+  invoices       Invoice[]
+}
+
+model Branch {
+  id             String    @id @default(cuid())
+  organizationId String
+  name           String
+  address        String?
+  state          String?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+}
+
+model User {
+  id             String    @id @default(cuid())
+  organizationId String
+  email          String    @unique
+  name           String
+  role           String    @default("ACCOUNTANT") // OWNER, CFO, ACCOUNTANT, HR
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+}
+
+// ----------------------------------------------------------------------------
+// 2. DETERMINISTIC ACCOUNTING ENGINE (Phase 2)
+// ----------------------------------------------------------------------------
+
+// e.g. Assets, Liabilities, Equity, Revenue, Expenses
+model LedgerGroup {
+  id             String    @id @default(cuid())
+  name           String
+  nature         String    // ASSET, LIABILITY, EQUITY, REVENUE, EXPENSE
+  parentId       String?   // For hierarchical groups
+  
+  parent         LedgerGroup?  @relation("GroupHierarchy", fields: [parentId], references: [id])
+  children       LedgerGroup[] @relation("GroupHierarchy")
+  accounts       Account[]
+}
+
+// The individual ledger accounts (e.g. "HDFC Bank", "Sales Account", "Acme Corp")
+model Account {
+  id             String    @id @default(cuid())
+  organizationId String
+  groupId        String
+  name           String
+  balance        Float     @default(0.0) // Cached running balance
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  group          LedgerGroup  @relation(fields: [groupId], references: [id])
+  transactions   Transaction[]
+}
+
+// A Voucher groups a set of double-entry transactions (e.g. JV, Sales, Payment)
+model Voucher {
+  id             String    @id @default(cuid())
+  organizationId String
+  voucherNo      String
+  type           String    // SALES, PURCHASE, RECEIPT, PAYMENT, JOURNAL, CONTRA
+  date           DateTime
+  narration      String?
+  isReversed     Boolean   @default(false)
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  organization   Organization  @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  transactions   Transaction[]
+}
+
+// The immutable ledger lines. MUST satisfy SUM(debit) == SUM(credit) for a given voucherId
+model Transaction {
+  id             String    @id @default(cuid())
+  voucherId      String
+  accountId      String
+  amount         Float     // Absolute amount
+  type           String    // DEBIT or CREDIT
+  createdAt      DateTime  @default(now())
+
+  voucher        Voucher   @relation(fields: [voucherId], references: [id], onDelete: Cascade)
+  account        Account   @relation(fields: [accountId], references: [id])
+}
+
+// ----------------------------------------------------------------------------
+// MASTER DATA
+// ----------------------------------------------------------------------------
+
+model Customer {
+  id             String    @id @default(cuid())
+  organizationId String
+  name           String
+  gstin          String?
+  address        String?
+  creditLimit    Float     @default(0.0)
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  invoices       Invoice[]
+}
+
+model Supplier {
+  id             String    @id @default(cuid())
+  organizationId String
+  name           String
+  gstin          String?
+  paymentTerms   String?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+}
+
+model Product {
+  id             String    @id @default(cuid())
+  organizationId String
+  sku            String    @unique
+  name           String
+  hsn            String?
+  unit           String    @default("NOS" )
+  purchasePrice  Float     @default(0.0)
+  sellingPrice   Float     @default(0.0)
+  gstRate        Float     @default(18.0)
+  currentStock   Float     @default(0.0)
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  invoiceLines   InvoiceLine[]
+}
+
+
+// ----------------------------------------------------------------------------
+// INVOICING & INVENTORY
+// ----------------------------------------------------------------------------
+
+model Invoice {
+  id             String        @id @default(cuid())
+  organizationId String
+  customerId     String
+  invoiceNo      String
+  date           DateTime      @default(now())
+  totalTaxable   Float
+  totalTax       Float
+  grandTotal     Float
+  isInterState   Boolean       @default(false)
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+
+  organization   Organization  @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  customer       Customer      @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  lines          InvoiceLine[]
+}
+
+model InvoiceLine {
+  id             String    @id @default(cuid())
+  invoiceId      String
+  productId      String
+  quantity       Float
+  unitPrice      Float
+  taxableAmount  Float
+  gstRate        Float
+  totalAmount    Float
+
+  invoice        Invoice   @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  product        Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
+}
+

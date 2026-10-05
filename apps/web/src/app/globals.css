@@ -1,0 +1,164 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Modern Minimalist Financial OS Color Palette */
+  --bg-app: #f8fafc;
+  --bg-card: #ffffff;
+  --bg-surface: #ffffff;
+  --bg-surface-muted: #f1f5f9;
+  --bg-surface-hover: #e2e8f0;
+  
+  --border-light: #f1f5f9;
+  --border-base: #e2e8f0;
+  --border-strong: #cbd5e1;
+
+  --text-primary: #0f172a;
+  --text-secondary: #334155;
+  --text-muted: #64748b;
+  --text-subtle: #94a3b8;
+
+  --brand: #4f46e5;
+  --brand-light: #eef2ff;
+  --brand-dark: #3730a3;
+
+  --success: #10b981;
+  --success-bg: #ecfdf5;
+  --warning: #f59e0b;
+  --warning-bg: #fffbeb;
+  --danger: #ef4444;
+  --danger-bg: #fef2f2;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  color: var(--text-primary);
+  background: var(--bg-app);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+  font-size: 13px;
+}
+
+/* ── Scrollbars ──────────────────────────────────────── */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 9999px; }
+::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+/* ── Focus rings ─────────────────────────────────────── */
+*:focus-visible {
+  outline: 2px solid #4f46e5;
+  outline-offset: 2px;
+}
+
+/* ── Monospace numbers ───────────────────────────────── */
+.font-mono, .tabular-nums {
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Animations ──────────────────────────────────────── */
+@keyframes fadeSlideIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.3; }
+}
+@keyframes slideInRight {
+  from { transform: translateX(100%); opacity: 0; }
+  to   { transform: translateX(0);    opacity: 1; }
+}
+
+.animate-fade-slide { animation: fadeSlideIn 0.15s cubic-bezier(0.16, 1, 0.3, 1) both; }
+.animate-slide-right { animation: slideInRight 0.25s cubic-bezier(0.16, 1, 0.3, 1) both; }
+.animate-pulse-dot { animation: pulse-dot 2s ease-in-out infinite; }
+
+/* ── Cards & Panels ─────────────────────────────────── */
+.tally-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.75rem;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.03);
+  transition: all 0.15s ease;
+}
+
+.tally-card:hover {
+  border-color: #cbd5e1;
+}
+
+.tally-card-active {
+  background: #ffffff;
+  border: 1px solid #4f46e5;
+  box-shadow: 0 0 0 1px #4f46e5;
+  border-radius: 0.75rem;
+}
+
+.tally-header-strip {
+  background: #0f172a;
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 0.8125rem;
+  letter-spacing: 0.025em;
+  border-top-left-radius: 0.75rem;
+  border-top-right-radius: 0.75rem;
+}
+
+.tally-yellow-bar {
+  background-color: #4f46e5;
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.tally-yellow-bar:hover {
+  background-color: #4338ca;
+}
+
+/* ── Status pills ────────────────────────────────────── */
+.pill-success { background: #ecfdf5; color: #047857; border: 1px solid #a7f3d0; border-radius: 9999px; }
+.pill-warning { background: #fffbeb; color: #92400e; border: 1px solid #fde68a; border-radius: 9999px; }
+.pill-danger  { background: #fef2f2; color: #991b1b; border: 1px solid #fecaca; border-radius: 9999px; }
+.pill-info    { background: #eff6ff; color: #1e40af; border: 1px solid #bfdbfe; border-radius: 9999px; }
+.pill-neutral { background: #f1f5f9; color: #475569; border: 1px solid #e2e8f0; border-radius: 9999px; }
+.pill-brand   { background: #eef2ff; color: #4f46e5; border: 1px solid #c7d2fe; border-radius: 9999px; }
+
+/* ── Sidebar nav items ───────────────────────────────── */
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.5rem;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: #475569;
+  cursor: pointer;
+  transition: all 0.12s ease;
+  width: 100%;
+  text-align: left;
+}
+.nav-item:hover {
+  background: #f1f5f9;
+  color: #0f172a;
+}
+.nav-item.active {
+  background: #eef2ff;
+  color: #4f46e5;
+  font-weight: 600;
+}
+.nav-item.active svg {
+  color: #4f46e5;
+}
