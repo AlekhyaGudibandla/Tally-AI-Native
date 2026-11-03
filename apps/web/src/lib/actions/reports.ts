@@ -1,8 +1,13 @@
 'use server';
 
+import { auth } from '@/auth';
+
 import prisma from '@/lib/db';
 
-export async function getTrialBalanceAction(organizationId: string) {
+export async function getTrialBalanceAction(clientOrgId?: string) {
+  const session = await auth();
+  const organizationId = (session?.user as any)?.organizationId;
+  if (!organizationId) return { success: false, error: 'Unauthorized: No organization context' };
   try {
     const accounts = await prisma.account.findMany({
       where: { organizationId },
@@ -55,7 +60,10 @@ export async function getTrialBalanceAction(organizationId: string) {
   }
 }
 
-export async function getFinancialSummaryAction(organizationId: string) {
+export async function getFinancialSummaryAction(clientOrgId?: string) {
+  const session = await auth();
+  const organizationId = (session?.user as any)?.organizationId;
+  if (!organizationId) return { success: false, error: 'Unauthorized: No organization context' };
   try {
     const invoices = await prisma.invoice.findMany({
       where: { organizationId },

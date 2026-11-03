@@ -3,10 +3,10 @@ import './globals.css';
 import { LedgerProvider } from '@/lib/store/ledger-context';
 
 export const metadata: Metadata = {
-  title: 'Vahi — Familiar Accounting, Redesigned for the AI Era',
+  title: 'Ledger AI — Intelligent Accounting & Financial Management',
   description:
-    'Vahi is the AI-native accounting and business operating platform. Familiar Tally-grade double-entry accounting with automated reconciliation, GST, e-invoicing and intelligent workflows.',
-  keywords: ['accounting software', 'GST', 'Tally alternative', 'AI accounting', 'India ERP'],
+    'Ledger AI is a modern, AI-powered accounting and financial management platform with double-entry ledgers, automated reconciliation, GST compliance, and intelligent workflows.',
+  keywords: ['accounting software', 'GST', 'Ledger AI', 'business accounting', 'ERP'],
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -16,7 +16,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
       </head>
-      <body className="h-full bg-[#f2f6fa] text-slate-900 antialiased selection:bg-[#ffbe00] selection:text-slate-900">
+      <body className="h-full bg-slate-50 text-slate-900 antialiased selection:bg-blue-600 selection:text-white">
         <LedgerProvider>{children}</LedgerProvider>
       </body>
     </html>

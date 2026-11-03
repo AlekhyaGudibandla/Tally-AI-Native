@@ -43,8 +43,8 @@ export const UserGuideModal: React.FC<UserGuideModalProps> = ({ isOpen, onClose,
           <div className="flex items-center space-x-2">
             <BookOpen className="h-5 w-5 text-[#ffbe00]" />
             <div>
-              <h2 className="font-bold text-base">Vahi User Guide & Feature Walkthrough</h2>
-              <p className="text-[11px] text-blue-100">Simple, non-technical manual for AI-native Tally accounting</p>
+              <h2 className="font-bold text-base">Ledger AI User Guide & Feature Walkthrough</h2>
+              <p className="text-[11px] text-blue-100">Simple, non-technical manual for modern AI-assisted accounting</p>
             </div>
           </div>
           <button
@@ -59,44 +59,40 @@ export const UserGuideModal: React.FC<UserGuideModalProps> = ({ isOpen, onClose,
         <div className="flex items-center bg-[#f0f4f8] px-4 pt-2 border-b border-slate-200 space-x-1 text-xs">
           <button
             onClick={() => setActiveSection('OVERVIEW')}
-            className={`px-4 py-2 font-bold rounded-t border-t border-x transition ${
-              activeSection === 'OVERVIEW'
+            className={`px-4 py-2 font-bold rounded-t border-t border-x transition ${activeSection === 'OVERVIEW'
                 ? 'bg-white text-[#005a9e] border-slate-300 border-b-white'
                 : 'text-slate-600 border-transparent hover:bg-slate-200'
-            }`}
+              }`}
           >
             1. Overview & What This Site Does
           </button>
 
           <button
             onClick={() => setActiveSection('WORKFLOWS')}
-            className={`px-4 py-2 font-bold rounded-t border-t border-x transition ${
-              activeSection === 'WORKFLOWS'
+            className={`px-4 py-2 font-bold rounded-t border-t border-x transition ${activeSection === 'WORKFLOWS'
                 ? 'bg-white text-[#005a9e] border-slate-300 border-b-white'
                 : 'text-slate-600 border-transparent hover:bg-slate-200'
-            }`}
+              }`}
           >
             2. Step-by-Step Feature Workflows
           </button>
 
           <button
             onClick={() => setActiveSection('SHORTCUTS')}
-            className={`px-4 py-2 font-bold rounded-t border-t border-x transition ${
-              activeSection === 'SHORTCUTS'
+            className={`px-4 py-2 font-bold rounded-t border-t border-x transition ${activeSection === 'SHORTCUTS'
                 ? 'bg-white text-[#005a9e] border-slate-300 border-b-white'
                 : 'text-slate-600 border-transparent hover:bg-slate-200'
-            }`}
+              }`}
           >
             3. Fast Keyboard Shortcuts
           </button>
 
           <button
             onClick={() => setActiveSection('TALLY_MAP')}
-            className={`px-4 py-2 font-bold rounded-t border-t border-x transition ${
-              activeSection === 'TALLY_MAP'
+            className={`px-4 py-2 font-bold rounded-t border-t border-x transition ${activeSection === 'TALLY_MAP'
                 ? 'bg-white text-[#005a9e] border-slate-300 border-b-white'
                 : 'text-slate-600 border-transparent hover:bg-slate-200'
-            }`}
+              }`}
           >
             4. Tally Prime Feature Mapping
           </button>
@@ -121,10 +117,10 @@ export const UserGuideModal: React.FC<UserGuideModalProps> = ({ isOpen, onClose,
               <div className="bg-indigo-50 p-4 rounded-lg border border-indigo-100 space-y-2">
                 <h3 className="font-extrabold text-indigo-900 text-sm flex items-center space-x-1.5">
                   <Sparkles className="h-4 w-4 text-[#ffbe00]" />
-                  <span>What is Vahi?</span>
+                  <span>What is Ledger AI?</span>
                 </h3>
                 <p className="text-slate-700 leading-relaxed">
-                  <strong>Vahi (वही)</strong> is an easy-to-use, AI-powered business accounting software designed to completely replace legacy tools like Tally Prime. It allows non-technical business owners, accountants, and finance heads to handle 100% of their business operations — from issuing tax invoices, matching bank statements, tracking inventory, calculating GST returns, and managing payroll — with automated AI assistance.
+                  <strong>Ledger AI</strong> is an easy-to-use, AI-powered business accounting software designed to simplify modern company finances. It allows business owners, accountants, and finance heads to handle 100% of their business operations — from issuing tax invoices, matching bank statements, tracking inventory, calculating GST returns, and managing payroll — with automated AI assistance.
                 </p>
               </div>
 
@@ -145,7 +141,7 @@ export const UserGuideModal: React.FC<UserGuideModalProps> = ({ isOpen, onClose,
                     <span>Background AI Automation</span>
                   </div>
                   <p className="text-slate-600">
-                    Vahi silently parses vendor bills (OCR), checks buyer GSTINs, matches bank payments, flags overdue receivables, and alerts you before cash flow falls low.
+                    Ledger AI silently parses vendor bills (OCR), checks buyer GSTINs, matches bank payments, flags overdue receivables, and alerts you before cash flow falls low.
                   </p>
                 </div>
               </div>
@@ -171,8 +167,8 @@ export const UserGuideModal: React.FC<UserGuideModalProps> = ({ isOpen, onClose,
                 <ol className="list-decimal list-inside space-y-1 text-slate-600 pl-1">
                   <li>Navigate to <strong>Sales</strong> workspace or press <strong>Alt+S</strong>.</li>
                   <li>Click <strong>Create Tax Invoice</strong>. Select customer name and billing items.</li>
-                  <li>Vahi automatically calculates CGST/SGST (for same state) or IGST (for inter-state).</li>
-                  <li>For invoices over ₹50,000, Vahi generates statutory E-Way Bill details and a 64-character SHA-256 e-Invoice IRN hash.</li>
+                  <li>Ledger AI automatically calculates CGST/SGST (for same state) or IGST (for inter-state).</li>
+                  <li>For invoices over ₹50,000, Ledger AI generates statutory E-Way Bill details and a 64-character SHA-256 e-Invoice IRN hash.</li>
                   <li>Click <strong>Post & Issue Invoice</strong> — stock is deducted automatically and receivables are updated!</li>
                 </ol>
               </div>
@@ -194,7 +190,7 @@ export const UserGuideModal: React.FC<UserGuideModalProps> = ({ isOpen, onClose,
                 <ol className="list-decimal list-inside space-y-1 text-slate-600 pl-1">
                   <li>Navigate to <strong>Banking</strong> workspace.</li>
                   <li>Click <strong>Import Bank CSV Statement</strong> or paste text from HDFC/ICICI/SBI online banking.</li>
-                  <li>Vahi's AI matches bank credits and debits against open customer invoices and vendor bills.</li>
+                  <li>Ledger AI matches bank credits and debits against open customer invoices and vendor bills.</li>
                   <li>Click <strong>Run Reconciliation</strong> — matched entries clear automatically with 1-click!</li>
                 </ol>
               </div>
@@ -225,7 +221,7 @@ export const UserGuideModal: React.FC<UserGuideModalProps> = ({ isOpen, onClose,
           {activeSection === 'SHORTCUTS' && (
             <div className="space-y-4">
               <p className="text-slate-600">
-                Vahi supports full keyboard navigation identical to Tally Prime. Work 10x faster without touching your mouse!
+                Ledger AI supports full keyboard navigation. Work faster with standard accounting shortcuts:
               </p>
 
               <div className="border border-slate-200 rounded-lg overflow-hidden">
@@ -240,8 +236,8 @@ export const UserGuideModal: React.FC<UserGuideModalProps> = ({ isOpen, onClose,
                   <tbody className="divide-y divide-slate-100 font-medium">
                     <tr className="hover:bg-slate-50">
                       <td className="py-2.5 px-4 font-mono font-bold text-indigo-600">Ctrl + K / ⌘K</td>
-                      <td className="py-2.5 px-4 font-bold text-slate-900">Ask Vahi (G: Go To)</td>
-                      <td className="py-2.5 px-4 text-slate-600">Open AI Slide-Over Command Drawer for search or action.</td>
+                      <td className="py-2.5 px-4 font-bold text-slate-900">Ask Ledger AI (Go To)</td>
+                      <td className="py-2.5 px-4 text-slate-600">Open AI Command Drawer for search or action.</td>
                     </tr>
                     <tr className="hover:bg-slate-50">
                       <td className="py-2.5 px-4 font-mono font-bold text-indigo-600">Alt + S</td>
@@ -277,7 +273,7 @@ export const UserGuideModal: React.FC<UserGuideModalProps> = ({ isOpen, onClose,
           {activeSection === 'TALLY_MAP' && (
             <div className="space-y-4">
               <p className="text-slate-600">
-                Migrating from Tally Prime? Here is how familiar Tally menus map directly to Vahi:
+                Migrating from Tally Prime? Here is how familiar accounting menus map directly to Ledger AI:
               </p>
 
               <div className="border border-slate-200 rounded-lg overflow-hidden">
@@ -285,7 +281,7 @@ export const UserGuideModal: React.FC<UserGuideModalProps> = ({ isOpen, onClose,
                   <thead className="bg-[#005a9e] text-white text-[11px] uppercase">
                     <tr>
                       <th className="py-2.5 px-4">Tally Prime Feature</th>
-                      <th className="py-2.5 px-4">Vahi Workspace</th>
+                      <th className="py-2.5 px-4">Ledger AI Workspace</th>
                       <th className="py-2.5 px-4">AI Advantage</th>
                     </tr>
                   </thead>

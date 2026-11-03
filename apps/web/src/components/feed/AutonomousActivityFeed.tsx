@@ -38,9 +38,9 @@ export const AutonomousActivityFeed: React.FC = () => {
             <Activity className="h-4 w-4 animate-pulse" />
             <span>Real-Time Operations Feed</span>
           </div>
-          <h1 className="text-2xl font-bold tracking-tight text-slate-900 mt-1">Autonomous Operations Stream</h1>
+          <h1 className="text-2xl font-bold tracking-tight text-slate-900 mt-1">Activity & Operations Stream</h1>
           <p className="text-slate-500 text-sm mt-1">
-            Vahi operates your back office in the background. Invoices are parsed, bank feeds cleared, and GST verified automatically.
+            Ledger AI operates your back office in the background. Invoices are parsed, bank feeds cleared, and GST verified automatically.
           </p>
         </div>
 

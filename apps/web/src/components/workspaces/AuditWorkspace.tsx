@@ -52,7 +52,7 @@ export const AuditWorkspace: React.FC = () => {
       <div className="card p-6 space-y-4">
         <h3 className="font-bold text-slate-900 text-base flex items-center space-x-2">
           <ShieldCheck className="h-5 w-5 text-indigo-600" />
-          <span>Vahi AI Safety Governance Model</span>
+          <span>Ledger AI Safety & Governance Model</span>
         </h3>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">

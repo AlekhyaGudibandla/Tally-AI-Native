@@ -1,8 +1,13 @@
 'use server';
 
+import { auth } from '@/auth';
+
 import prisma from '@/lib/db';
 
-export async function getAccountingData(organizationId: string) {
+export async function getAccountingData(clientOrgId?: string) {
+  const session = await auth();
+  const organizationId = (session?.user as any)?.organizationId;
+  if (!organizationId) return { success: false, error: 'Unauthorized: No organization context' };
   try {
     const accounts = await prisma.account.findMany({
       where: { organizationId },
@@ -22,7 +27,10 @@ export async function getAccountingData(organizationId: string) {
   }
 }
 
-export async function getSalesData(organizationId: string) {
+export async function getSalesData(clientOrgId?: string) {
+  const session = await auth();
+  const organizationId = (session?.user as any)?.organizationId;
+  if (!organizationId) return { success: false, error: 'Unauthorized: No organization context' };
   try {
     const invoices = await prisma.invoice.findMany({
       where: { organizationId },
@@ -37,7 +45,10 @@ export async function getSalesData(organizationId: string) {
   }
 }
 
-export async function getPurchasesData(organizationId: string) {
+export async function getPurchasesData(clientOrgId?: string) {
+  const session = await auth();
+  const organizationId = (session?.user as any)?.organizationId;
+  if (!organizationId) return { success: false, error: 'Unauthorized: No organization context' };
   try {
     const suppliers = await prisma.supplier.findMany({ where: { organizationId } });
     const products = await prisma.product.findMany({ where: { organizationId } });
@@ -52,7 +63,10 @@ export async function getPurchasesData(organizationId: string) {
   }
 }
 
-export async function getInventoryData(organizationId: string) {
+export async function getInventoryData(clientOrgId?: string) {
+  const session = await auth();
+  const organizationId = (session?.user as any)?.organizationId;
+  if (!organizationId) return { success: false, error: 'Unauthorized: No organization context' };
   try {
     const products = await prisma.product.findMany({
       where: { organizationId },
@@ -64,7 +78,10 @@ export async function getInventoryData(organizationId: string) {
   }
 }
 
-export async function getMasterData(organizationId: string) {
+export async function getMasterData(clientOrgId?: string) {
+  const session = await auth();
+  const organizationId = (session?.user as any)?.organizationId;
+  if (!organizationId) return { success: false, error: 'Unauthorized: No organization context' };
   try {
     const customers = await prisma.customer.findMany({ where: { organizationId } });
     const suppliers = await prisma.supplier.findMany({ where: { organizationId } });
@@ -75,7 +92,10 @@ export async function getMasterData(organizationId: string) {
   }
 }
 
-export async function getDashboardData(organizationId: string) {
+export async function getDashboardData(clientOrgId?: string) {
+  const session = await auth();
+  const organizationId = (session?.user as any)?.organizationId;
+  if (!organizationId) return { success: false, error: 'Unauthorized: No organization context' };
   try {
     const vouchersCount = await prisma.voucher.count({ where: { organizationId } });
     const customersCount = await prisma.customer.count({ where: { organizationId } });

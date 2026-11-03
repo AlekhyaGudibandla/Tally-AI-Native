@@ -1,6 +1,12 @@
 'use server';
 
+import { auth } from '@/auth';
+
 import prisma from '@/lib/db';
+
+export async function askLedgerAICopilotAction(query: string, organizationId: string) {
+  return askVahiCopilotAction(query, organizationId);
+}
 
 export async function askVahiCopilotAction(query: string, organizationId: string) {
   try {

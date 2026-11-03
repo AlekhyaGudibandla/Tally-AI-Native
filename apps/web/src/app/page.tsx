@@ -24,7 +24,7 @@ import { ChartWorkspace } from '@/components/workspaces/ChartWorkspace';
 import { HealthWorkspace } from '@/components/workspaces/HealthWorkspace';
 import { ForecastsWorkspace } from '@/components/workspaces/ForecastsWorkspace';
 import MasterDataWorkspace from '@/components/workspaces/MasterDataWorkspace';
-import { X, Sparkles } from 'lucide-react';
+import { X, Sparkles, Cpu } from 'lucide-react';
 
 export default function Home() {
   const [activeView, setActiveView] = useState('dashboard');
@@ -89,9 +89,9 @@ export default function Home() {
           onOpenAskAI={openAskAI}
         />
 
-        {/* Main content */}
-        <main className="flex-1 overflow-y-auto bg-slate-50">
-          <div className="animate-fade-slide min-h-full" key={activeView}>
+        {/* Main content viewport */}
+        <main className="flex-1 overflow-y-auto bg-slate-50 relative">
+          <div className="min-h-full" key={activeView}>
             {renderWorkspace()}
           </div>
         </main>
@@ -104,34 +104,34 @@ export default function Home() {
         />
       </div>
 
-      {/* ── AI Drawer (slide-in from right) ─────────────────────────── */}
+      {/* ── AI Assistant Drawer ─────────────────────────── */}
       {aiDrawerOpen && (
         <>
           {/* Backdrop */}
           <div
-            className="fixed inset-0 bg-slate-900/30 backdrop-blur-xs z-40 transition-opacity animate-fade-slide"
+            className="fixed inset-0 bg-slate-900/40 backdrop-blur-xs z-40 transition-opacity"
             onClick={() => setAiDrawerOpen(false)}
           />
 
           {/* Drawer panel */}
           <div className="fixed right-0 top-0 bottom-0 w-full max-w-xl z-50 animate-slide-right flex flex-col bg-white shadow-2xl border-l border-slate-200">
             {/* Drawer header */}
-            <div className="flex items-center justify-between px-5 py-3.5 bg-slate-900 text-white border-b border-slate-800">
-              <div className="flex items-center gap-2.5">
-                <div className="h-7 w-7 rounded-lg bg-indigo-500/20 border border-indigo-500/30 text-indigo-300 flex items-center justify-center font-bold">
+            <div className="flex items-center justify-between px-5 py-4 bg-white border-b border-slate-200">
+              <div className="flex items-center gap-3">
+                <div className="h-9 w-9 rounded-xl bg-blue-600 text-white flex items-center justify-center font-bold shadow-2xs">
                   <Sparkles className="h-4 w-4" />
                 </div>
                 <div>
-                  <p className="font-bold text-sm leading-tight text-white flex items-center gap-2">
-                    <span>Ask Vahi AI</span>
-                    <span className="bg-indigo-500/30 text-indigo-300 text-[10px] font-mono px-1.5 py-0.5 rounded">⌘K</span>
+                  <p className="font-bold text-sm leading-tight text-slate-900 flex items-center gap-2">
+                    <span>Ledger AI Assistant</span>
+                    <span className="bg-slate-100 text-slate-600 text-[10px] font-semibold px-2 py-0.5 rounded-full border border-slate-200">⌘K</span>
                   </p>
-                  <p className="text-[11px] text-slate-400">Autonomous Financial Operations & Reasoning Engine</p>
+                  <p className="text-xs text-slate-500">Ask financial questions or instruct actions in plain English</p>
                 </div>
               </div>
               <button
                 onClick={() => setAiDrawerOpen(false)}
-                className="p-1 rounded-lg hover:bg-slate-800 text-slate-400 hover:text-white transition"
+                className="p-1.5 rounded-lg hover:bg-slate-100 text-slate-400 hover:text-slate-600 transition"
                 title="Close (Esc)"
               >
                 <X className="h-4 w-4" />
@@ -139,7 +139,7 @@ export default function Home() {
             </div>
 
             {/* Drawer body — mount the AI Command Center */}
-            <div className="flex-1 overflow-hidden">
+            <div className="flex-1 overflow-hidden p-3 bg-slate-50/50">
               <AICommandCenter initialQuery={aiInitialQuery} embedded />
             </div>
           </div>

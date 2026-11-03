@@ -2,74 +2,70 @@
 
 import { useFormState, useFormStatus } from 'react-dom';
 import { authenticate } from '@/lib/actions/auth';
-import { KeyRound, Mail } from 'lucide-react';
+import { KeyRound, Mail, ArrowRight, Loader2 } from 'lucide-react';
 import clsx from 'clsx';
 
 export default function LoginForm() {
   const [errorMessage, dispatch] = useFormState(authenticate, undefined);
 
   return (
-    <form action={dispatch} className="space-y-3">
-      <div className="flex-1 rounded-lg bg-white px-6 pb-4 pt-8 shadow-sm ring-1 ring-slate-200">
-        <h1 className="mb-3 text-2xl text-slate-800 font-semibold">
-          Please log in to continue.
-        </h1>
-        <div className="w-full">
-          <div>
-            <label
-              className="mb-3 mt-5 block text-xs font-medium text-slate-900"
-              htmlFor="email"
-            >
-              Email
-            </label>
-            <div className="relative">
-              <input
-                className="peer block w-full rounded-md border border-slate-200 py-[9px] pl-10 text-sm outline-2 placeholder:text-slate-500 text-slate-800"
-                id="email"
-                type="email"
-                name="email"
-                placeholder="Enter your email address"
-                required
-                defaultValue="admin@vahi.com"
-              />
-              <Mail className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-slate-500 peer-focus:text-slate-900" />
-            </div>
-          </div>
-          <div className="mt-4">
-            <label
-              className="mb-3 mt-5 block text-xs font-medium text-slate-900"
-              htmlFor="password"
-            >
-              Password
-            </label>
-            <div className="relative">
-              <input
-                className="peer block w-full rounded-md border border-slate-200 py-[9px] pl-10 text-sm outline-2 placeholder:text-slate-500 text-slate-800"
-                id="password"
-                type="password"
-                name="password"
-                placeholder="Enter password"
-                required
-                defaultValue="admin"
-              />
-              <KeyRound className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-slate-500 peer-focus:text-slate-900" />
-            </div>
-          </div>
-        </div>
-        <LoginButton />
-        <div
-          className="flex h-8 items-end space-x-1"
-          aria-live="polite"
-          aria-atomic="true"
+    <form action={dispatch} className="space-y-4">
+      <div>
+        <label
+          className="block text-xs font-semibold text-slate-700 mb-1.5"
+          htmlFor="email"
         >
-          {errorMessage && (
-            <>
-              <p className="text-sm text-red-500">{errorMessage}</p>
-            </>
-          )}
+          Email address
+        </label>
+        <div className="relative">
+          <input
+            className="w-full rounded-xl border border-slate-200 bg-slate-50/50 py-2.5 pl-10 pr-4 text-sm text-slate-900 placeholder:text-slate-400 focus:border-blue-600 focus:bg-white focus:outline-none transition shadow-2xs"
+            id="email"
+            type="email"
+            name="email"
+            placeholder="admin@ledgerai.com"
+            required
+            defaultValue="admin@ledgerai.com"
+          />
+          <Mail className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
         </div>
-        <div className="mt-2 text-xs text-slate-500 text-center">
-            Demo Login: admin@vahi.com / admin
+      </div>
+
+      <div>
+        <div className="flex items-center justify-between mb-1.5">
+          <label
+            className="block text-xs font-semibold text-slate-700"
+            htmlFor="password"
+          >
+            Password
+          </label>
+        </div>
+        <div className="relative">
+          <input
+            className="w-full rounded-xl border border-slate-200 bg-slate-50/50 py-2.5 pl-10 pr-4 text-sm text-slate-900 placeholder:text-slate-400 focus:border-blue-600 focus:bg-white focus:outline-none transition shadow-2xs"
+            id="password"
+            type="password"
+            name="password"
+            placeholder="Enter your password"
+            required
+            defaultValue="admin"
+          />
+          <KeyRound className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+        </div>
+      </div>
+
+      <LoginButton />
+
+      {errorMessage && (
+        <div className="p-3 rounded-lg bg-red-50 border border-red-200 text-xs font-medium text-red-700">
+          {errorMessage}
+        </div>
+      )}
+
+      <div className="pt-2">
+        <div className="p-3 rounded-xl bg-blue-50/60 border border-blue-100 text-xs text-slate-600 flex items-center justify-between">
+          <span className="font-medium text-slate-500">Demo Login:</span>
+          <span className="font-semibold text-blue-700">admin@ledgerai.com / admin</span>
         </div>
       </div>
     </form>
@@ -81,15 +77,26 @@ function LoginButton() {
 
   return (
     <button
+      type="submit"
+      disabled={pending}
       className={clsx(
-        "mt-6 flex h-10 w-full items-center justify-center rounded-lg bg-indigo-600 px-4 text-sm font-medium text-white transition-colors hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600",
+        "w-full mt-2 h-11 flex items-center justify-center gap-2 rounded-xl bg-blue-600 text-white font-semibold text-sm shadow-sm transition hover:bg-blue-700",
         {
-          "opacity-50 cursor-not-allowed": pending,
+          "opacity-75 cursor-not-allowed": pending,
         }
       )}
-      aria-disabled={pending}
     >
-      Log in
+      {pending ? (
+        <>
+          <Loader2 className="h-4 w-4 animate-spin" />
+          <span>Signing in...</span>
+        </>
+      ) : (
+        <>
+          <span>Sign In</span>
+          <ArrowRight className="h-4 w-4" />
+        </>
+      )}
     </button>
   );
 }

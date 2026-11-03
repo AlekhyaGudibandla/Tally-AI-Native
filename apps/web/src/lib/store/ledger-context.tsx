@@ -36,7 +36,7 @@ import { AccountingEngine } from '../engine/accounting-engine';
 import { GSTEngine } from '../engine/gst-engine';
 import { BankingReconciliationEngine } from '../engine/banking-reconciliation-engine';
 
-const STORAGE_KEY = 'vahi_ledger_production_state_v1';
+const STORAGE_KEY = 'ledger_ai_production_state_v1';
 
 interface LedgerContextType {
   org: Organization;
@@ -65,6 +65,7 @@ interface LedgerContextType {
   importBackupJSON: (jsonString: string) => { success: boolean; error?: string };
   resetToDefaultData: () => void;
   resetToEmptySlate: () => void;
+  refreshData: () => Promise<void>;
 
   // AI & Simulation Triggers
   simulateIncomingInvoice: () => void;
@@ -91,28 +92,128 @@ export const LedgerProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   const [agentRuns, setAgentRuns] = useState<AIAgentRun[]>([]);
   const [isLoaded, setIsLoaded] = useState(false);
 
-  // Load state from localStorage on initial mount
-  useEffect(() => {
+  // Hydrate state from real database via /api/ledger/state
+  const fetchRealDatabaseState = async () => {
     try {
-      const saved = localStorage.getItem(STORAGE_KEY);
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        if (parsed.org) setOrg(parsed.org);
-        if (parsed.accounts) setAccounts(parsed.accounts);
-        if (parsed.journalEntries) setJournalEntries(parsed.journalEntries);
-        if (parsed.invoices) setInvoices(parsed.invoices);
-        if (parsed.products) setProducts(parsed.products);
-        if (parsed.purchaseOrders) setPurchaseOrders(parsed.purchaseOrders);
-        if (parsed.grns) setGrns(parsed.grns);
-        if (parsed.bankTransactions) setBankTransactions(parsed.bankTransactions);
-        if (parsed.activityFeed) setActivityFeed(parsed.activityFeed);
-        if (parsed.auditLogs) setAuditLogs(parsed.auditLogs);
+      const res = await fetch('/api/ledger/state');
+      const json = await res.json();
+      if (json.success && json.data) {
+        const d = json.data;
+        if (d.org) {
+          setOrg((prev) => ({
+            ...prev,
+            id: d.org.id,
+            name: d.org.name,
+            legalName: d.org.name,
+            pan: d.org.pan || prev.pan,
+            gstin: d.org.gstin || prev.gstin,
+            stateName: d.org.branches?.[0]?.state || prev.stateName,
+            address: d.org.branches?.[0]?.address || prev.address,
+          }));
+        }
+        if (d.accounts && d.accounts.length > 0) {
+          const mappedAccounts = d.accounts.map((a: any) => ({
+            id: a.id,
+            name: a.name,
+            code: a.id.slice(-4).toUpperCase(),
+            type: a.group?.nature || 'ASSET',
+            subType: a.name.toLowerCase().includes('bank') ? 'BANK' : a.group?.nature === 'EXPENSE' ? 'INDIRECT_EXPENSE' : a.group?.nature === 'REVENUE' ? 'DIRECT_INCOME' : a.name.toLowerCase().includes('debtor') ? 'ACCOUNTS_RECEIVABLE' : a.name.toLowerCase().includes('creditor') ? 'ACCOUNTS_PAYABLE' : 'CURRENT_ASSET',
+            balance: a.balance,
+            nature: (a.group?.nature === 'ASSET' || a.group?.nature === 'EXPENSE') ? 'DEBIT' : 'CREDIT',
+            currency: 'INR',
+            isActive: true,
+            isReconciled: true,
+          }));
+          setAccounts(mappedAccounts);
+        }
+        if (d.products && d.products.length > 0) {
+          const mappedProducts = d.products.map((p: any) => ({
+            id: p.id,
+            sku: p.sku,
+            name: p.name,
+            hsnCode: p.hsn || '8471',
+            unit: p.unit || 'NOS',
+            purchasePrice: p.purchasePrice,
+            sellingPrice: p.sellingPrice,
+            currentStock: p.currentStock,
+            reorderLevel: 5,
+            gstRate: p.gstRate || 18,
+            category: 'Tech & Hardware',
+          }));
+          setProducts(mappedProducts);
+        }
+        if (d.invoices && d.invoices.length > 0) {
+          const mappedInvoices = d.invoices.map((inv: any) => ({
+            id: inv.id,
+            invoiceNumber: inv.invoiceNo,
+            type: 'TAX_INVOICE',
+            partyId: inv.customerId,
+            partyName: inv.customer?.name || 'Customer',
+            partyGstin: inv.customer?.gstin || '27AAACA1234A1Z1',
+            partyState: 'Maharashtra',
+            partyStateCode: '27',
+            invoiceDate: new Date(inv.date).toISOString().split('T')[0],
+            dueDate: new Date(new Date(inv.date).getTime() + 30 * 86400000).toISOString().split('T')[0],
+            status: 'ISSUED',
+            supplyType: inv.isInterState ? 'INTER_STATE' : 'INTRA_STATE',
+            subTotal: inv.totalTaxable,
+            totalDiscount: 0,
+            totalTax: inv.totalTax,
+            grandTotal: inv.grandTotal,
+            paidAmount: 0,
+            balanceAmount: inv.grandTotal,
+            createdVia: 'AI_AGENT',
+            items: [],
+          }));
+          setInvoices(mappedInvoices);
+        }
+        if (d.vouchers && d.vouchers.length > 0) {
+          const mappedVouchers = d.vouchers.map((v: any) => ({
+            id: v.id,
+            entryNumber: v.voucherNo,
+            voucherType: v.type,
+            entryDate: new Date(v.date).toISOString().split('T')[0],
+            status: 'POSTED',
+            narration: v.narration || '',
+            lines: v.transactions.map((t: any) => ({
+              id: t.id,
+              accountId: t.accountId,
+              accountName: t.account?.name || 'Account',
+              debit: t.type === 'DEBIT' ? t.amount : 0,
+              credit: t.type === 'CREDIT' ? t.amount : 0,
+            })),
+            totalDebit: v.transactions.filter((t: any) => t.type === 'DEBIT').reduce((s: number, t: any) => s + t.amount, 0),
+            totalCredit: v.transactions.filter((t: any) => t.type === 'CREDIT').reduce((s: number, t: any) => s + t.amount, 0),
+            sourceType: 'SYSTEM',
+            createdBy: 'Ledger AI',
+            postedAt: new Date(v.createdAt).toISOString(),
+            tags: [v.type],
+          }));
+          setJournalEntries(mappedVouchers);
+        }
+        if (d.workflowRuns && d.workflowRuns.length > 0) {
+          const mappedFeed = d.workflowRuns.map((r: any) => ({
+            id: r.id,
+            timestamp: new Date(r.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+            category: r.status === 'COMPLETED' ? 'AUTOMATED_POSTING' : r.status === 'WAITING_FOR_APPROVAL' ? 'APPROVAL_REQUEST' : 'SYSTEM_CHECK',
+            title: r.intent || 'AI Orchestrator Execution',
+            summary: `Workflow ${r.status} (${r.records?.length || 0} agent steps recorded)`,
+            severity: r.status === 'FAILED' ? 'DANGER' : r.status === 'WAITING_FOR_APPROVAL' ? 'WARNING' : 'SUCCESS',
+            status: r.status,
+            amount: 0,
+          }));
+          setActivityFeed(mappedFeed);
+        }
       }
-    } catch (e) {
-      console.error('Failed to load saved state from localStorage:', e);
+    } catch (err) {
+      console.warn('Real state fetch from DB deferred, using local fallback:', err);
     } finally {
       setIsLoaded(true);
     }
+  };
+
+  useEffect(() => {
+    fetchRealDatabaseState();
   }, []);
 
   // Save state to localStorage whenever state changes
@@ -512,7 +613,7 @@ export const LedgerProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `Vahi_Company_Backup_${org.name.replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.json`;
+    a.download = `LedgerAI_Company_Backup_${org.name.replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.json`;
     a.click();
     URL.revokeObjectURL(url);
   };
@@ -690,6 +791,7 @@ export const LedgerProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       importBackupJSON,
       resetToDefaultData,
       resetToEmptySlate,
+    refreshData: fetchRealDatabaseState,
       simulateIncomingInvoice,
       simulateBankFeed,
       simulateGSTAnomaly,

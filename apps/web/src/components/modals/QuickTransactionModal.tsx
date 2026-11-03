@@ -275,7 +275,7 @@ export const QuickTransactionModal: React.FC<QuickTransactionModalProps> = ({
             </div>
             <div>
               <h2 className="text-sm font-semibold text-slate-900">New Transaction</h2>
-              <p className="text-xs text-slate-500">Record sales, purchases, bank receipts, or tell Vahi in plain English</p>
+              <p className="text-xs text-slate-500">Record sales, purchases, bank receipts, or tell Ledger AI in plain English</p>
             </div>
           </div>
           <button
@@ -297,7 +297,7 @@ export const QuickTransactionModal: React.FC<QuickTransactionModalProps> = ({
             }`}
           >
             <Sparkles className="h-3.5 w-3.5 text-indigo-500" />
-            <span>Tell Vahi (AI)</span>
+            <span>Ask AI</span>
           </button>
           <button
             onClick={() => setActiveTab('sales')}
@@ -355,7 +355,7 @@ export const QuickTransactionModal: React.FC<QuickTransactionModalProps> = ({
                 <div>
                   <p className="font-semibold mb-0.5">No accounting jargon required</p>
                   <p className="text-indigo-800/80">
-                    Just type what happened (e.g. &ldquo;Sold 5 Dell Monitors to Nexus for 75,000 + 18% GST&rdquo; or &ldquo;Paid 35,000 office rent via bank&rdquo;). Vahi calculates tax, debits & credits, stock, and posts to ledger.
+                    Just type what happened (e.g. &ldquo;Sold 5 Dell Monitors to Nexus for 75,000 + 18% GST&rdquo; or &ldquo;Paid 35,000 office rent via bank&rdquo;). Ledger AI calculates tax, debits & credits, stock, and posts to ledger.
                   </p>
                 </div>
               </div>

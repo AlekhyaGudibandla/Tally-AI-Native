@@ -7,6 +7,7 @@ generator client {
 
 datasource db {
   provider = "sqlite"
+  url      = env("DATABASE_URL")
 }
 
 // ----------------------------------------------------------------------------
@@ -31,6 +32,9 @@ model Organization {
   suppliers      Supplier[]
   products       Product[]
   invoices       Invoice[]
+  workflowRuns   WorkflowRun[]
+  documents      Document[]
+  businessMemories BusinessMemory[]
 }
 
 model Branch {
@@ -200,5 +204,67 @@ model InvoiceLine {
 
   invoice        Invoice   @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
   product        Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
+}
+
+
+// ----------------------------------------------------------------------------
+// 4. AI WORKFLOW & KNOWLEDGE (Phase 2)
+// ----------------------------------------------------------------------------
+
+model WorkflowRun {
+  id             String    @id @default(cuid())
+  organizationId String
+  userId         String?
+  intent         String
+  status         String    // QUEUED, RUNNING, WAITING_FOR_INPUT, WAITING_FOR_APPROVAL, COMPLETED, FAILED, CANCELLED
+  state          String    // JSON serialized state of the workflow
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  records        AgentExecutionRecord[]
+}
+
+model AgentExecutionRecord {
+  id             String    @id @default(cuid())
+  workflowRunId  String
+  agentName      String
+  input          String    // JSON
+  output         String    // JSON
+  toolsUsed      String    // JSON array of tool names
+  latencyMs      Int
+  status         String    // SUCCESS, FAILED
+  createdAt      DateTime  @default(now())
+
+  workflowRun    WorkflowRun @relation(fields: [workflowRunId], references: [id], onDelete: Cascade)
+}
+
+model Document {
+  id               String    @id @default(cuid())
+  organizationId   String
+  fileName         String
+  fileType         String
+  providerFileId   String?   // ID from OpenAI or other provider
+  vectorStoreId    String?
+  ingestionStatus  String    // PENDING, PROCESSED, FAILED
+  content          String?   // Extracted raw text content
+  summary          String?   // Extracted document summary or title
+  metadata         String?   // JSON metadata (contentHash, tags, etc.)
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+
+  organization     Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+}
+
+model BusinessMemory {
+  id             String    @id @default(cuid())
+  organizationId String
+  fact           String
+  source         String
+  status         String    // PROPOSED, APPROVED, REJECTED
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
 }
 

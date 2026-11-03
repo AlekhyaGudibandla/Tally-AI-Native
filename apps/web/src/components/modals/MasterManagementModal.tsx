@@ -544,7 +544,7 @@ export const MasterManagementModal: React.FC<MasterManagementModalProps> = ({ is
                   <span>Restore JSON Company Backup</span>
                 </h3>
                 <p className="text-slate-600">
-                  Select a previously exported Vahi JSON backup file to restore all company vouchers and ledgers.
+                  Select a previously exported Ledger AI JSON backup file to restore all company vouchers and ledgers.
                 </p>
                 <label className="inline-flex items-center space-x-2 px-4 py-2 bg-emerald-700 hover:bg-emerald-800 text-white font-bold rounded shadow-sm cursor-pointer">
                   <Upload className="h-4 w-4" />
