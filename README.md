@@ -298,9 +298,6 @@ npm --prefix apps/web run dev
 ```
 Open **[http://localhost:3000](http://localhost:3000)** in your browser.
 
-**Default Login Credentials:**
-- **Email:** `admin@ledgerai.com` (or `admin@vahi.com`)
-- **Password:** `admin`
 
 ---
 
@@ -356,6 +353,4 @@ Open **[http://localhost:3000](http://localhost:3000)** in your browser.
 
 ---
 
-## 📄 License
 
-This project is licensed under the Apache 2.0 License. See the [LICENSE](LICENSE) file for details.
